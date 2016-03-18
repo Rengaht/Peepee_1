@@ -79,35 +79,35 @@ void ofApp::initControl(){
 	
 	_control_val[0]=0;
 	_control_val[1]=0;
-	_control_val[2]=0;
-	_control_val[3]=512;
-	_control_val[4]=512;
-	
-
-	_serial_ctrl.listDevices();
-
-#ifdef TARGET_WIN32
-	_serial_ctrl.setup(0,9600);
-#endif
-#if defined( TARGET_LINUX )
-		_serial_ctrl.setup("/dev/ttyACM0",9600);
-#endif
+	_control_val[2]=512;
+	_control_val[3]=1024;
+	_control_val[4]=900;
+//	
+//
+//	_serial_ctrl.listDevices();
+//
+//#ifdef TARGET_WIN32
+//	_serial_ctrl.setup(0,9600);
+//#endif
+//#if defined( TARGET_LINUX )
+//		_serial_ctrl.setup("/dev/ttyACM0",9600);
+//#endif
 
 }
 
 void ofApp::initSound(){
 
-	_sound_bgm[0].loadSound("sound/PIPI_1_1.wav");
-	_sound_bgm[1].loadSound("sound/PIPI_1_2.wav");
-	_sound_bgm[2].loadSound("sound/PIPI_1_3.wav");
-	for(int i=0;i<3;++i) _sound_bgm[i].setLoop(true);
+	_sound_bgm[0].loadSound("sound/PIPI_1_1.ogg");
+	_sound_bgm[1].loadSound("sound/PIPI_1_2.ogg");
+	_sound_bgm[2].loadSound("sound/PIPI_1_3.ogg");
+	//for(int i=0;i<3;++i) _sound_bgm[i].setLoop(true);
 
-	_sound_transfer[0].loadSound("sound/PIPI_1_transfer_1.wav");
-	_sound_transfer[1].loadSound("sound/PIPI_1_transfer_2.wav");
-	_sound_transfer[2].loadSound("sound/PIPI_1_transfer_3.wav");
+	_sound_transfer[0].loadSound("sound/PIPI_1_transfer_1.ogg");
+	_sound_transfer[1].loadSound("sound/PIPI_1_transfer_2.ogg");
+	_sound_transfer[2].loadSound("sound/PIPI_1_transfer_3.ogg");
 
 	_bgm_fade_in=FrameAnimation(40,120);
-	_bgm_fade_out=FrameAnimation(40);
+	_bgm_fade_out=FrameAnimation(20);
 	
 	_sound_vol=1.0;
 
@@ -131,7 +131,7 @@ void ofApp::update(){
 	//update sound volume
 	_bgm_fade_in.Update();
 	_bgm_fade_out.Update();
-	if(last_mode>-1){
+	if(last_mode>-1 && last_mode!=play_mode){
 		_sound_bgm[last_mode].setVolume(1-_bgm_fade_out.GetPortion());
 		if(_bgm_fade_out.GetPortion()==1) _sound_bgm[last_mode].stop();
 	}
@@ -160,49 +160,49 @@ void ofApp::update(){
 
 
 
-	string str=readSerialString(_serial_ctrl, '!');
+	//string str=readSerialString(_serial_ctrl, '!');
 
-	//cout<<"get: "<<str<<endl;
-	
-	
-	if(str.length()>0){
-		string read_string=str;//ofToString(bytesReadString);
-		
+	////cout<<"get: "<<str<<endl;
+	//
+	//
+	//if(str.length()>0){
+	//	string read_string=str;//ofToString(bytesReadString);
+	//	
 
-		vector<string> val=split(read_string,'|');
-		
+	//	vector<string> val=split(read_string,'|');
+	//	
 
-		if(val.size()==M_CONTROL){
+	//	if(val.size()==M_CONTROL){
 
-			cout<<"get: "<<ofToString(val)<<endl;
+	//		cout<<"get: "<<ofToString(val)<<endl;
 
-			for(int i=0;i<val.size();++i){
-				int n=ofToInt(val[i]);
-				switch(i){
-					case 0:
-					case 1:
-						if(n==0) triggerEvent(i);	
-						_control_val[i]=n;
-						break;
-					case 2:
-					case 3:
-						_control_val[i]=n;
-						break;
-					case 4:
-						if(abs(_control_val[4]-n)<=200){
-							_sound_vol=ofMap(n,0,1024,0,2);
-							if(play_mode>-1) _sound_bgm[play_mode].setVolume(_sound_vol);
-							_control_val[i]=n;
-						}
-						break;
-				}
-			}
-			//cout<<ofToString(_control_val)<<endl;
-		}
-	}
+	//		for(int i=0;i<val.size();++i){
+	//			int n=ofToInt(val[i]);
+	//			switch(i){
+	//				case 0:
+	//				case 1:
+	//					if(n==0) triggerEvent(i);	
+	//					_control_val[i]=n;
+	//					break;
+	//				case 2:
+	//				case 3:
+	//					_control_val[i]=n;
+	//					break;
+	//				case 4:
+	//					if(abs(_control_val[4]-n)<=200){
+	//						_sound_vol=ofMap(n,0,1024,0,2);
+	//						if(play_mode>-1) _sound_bgm[play_mode].setVolume(_sound_vol);
+	//						_control_val[i]=n;
+	//					}
+	//					break;
+	//			}
+	//		}
+	//		//cout<<ofToString(_control_val)<<endl;
+	//	}
+	//}
 
 
-	//if(ofGetFrameNum()%1801==1800) changeMode();
+	//if(ofGetFrameNum()%1201==1200) changeMode();
 	
 }
 void ofApp::triggerEvent(int ev){
@@ -326,14 +326,14 @@ void ofApp::draw(){
 	
 	_fbo_stroke.draw(0,0);
 	
-	if(save_frame) ofSaveFrame();
+	if(save_frame && ofGetFrameNum()%12==0) ofSaveFrame();
 
 
-	ofPushStyle();
+	/*ofPushStyle();
 	ofSetColor(ofColor::red);		
 		ofDrawBitmapString(ofToString(ofGetFrameRate()),20,20);
 		for(int i=0;i<M_CONTROL;++i) ofDrawBitmapString(ofToString(_control_val[i]),20,30+10*i);
-	ofPopStyle();
+	ofPopStyle();*/
 
 
 
@@ -345,6 +345,7 @@ void ofApp::keyPressed(int key){
 	switch(key){
 		case 's':
 			save_frame=!save_frame;
+			//ofSaveFrame();
 			break;
 		case 'd':
 			changeMode();

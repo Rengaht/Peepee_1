@@ -232,7 +232,7 @@ void PAnimal::draw(bool draw_fill){
 			}
 		}
 
-		ofDrawBitmapString(ofToString(_cur_mode)+" "+ofToString(_dest_mode),0,0);
+		//ofDrawBitmapString(ofToString(_cur_mode)+" "+ofToString(_dest_mode),0,0);
 
 		ofPopMatrix();
 		

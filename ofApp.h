@@ -33,7 +33,7 @@ class ofApp : public ofBaseApp{
 		float _sound_vol;
 		
 
-		ofSerial _serial_ctrl;
+		//ofSerial _serial_ctrl;
 
 		ofColor RoadColor[3];
 
